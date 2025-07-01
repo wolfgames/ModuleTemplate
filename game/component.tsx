@@ -1,10 +1,10 @@
 import { FC, forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
-import { ModuleResult, ModuleResultType, OperationHandle } from './types';
-import { ModuleConfiguration } from './configuration';
+import { ModuleResult, ModuleResultType, OperationHandle } from 'module-kit';
+import { ModuleConfig } from './configuration';
 import { ModuleOperation } from './operation';
 
 type Props = {
-  config: ModuleConfiguration;
+  config: ModuleConfig;
   result: (result: ModuleResult) => void;
   ready: () => void;
 }
@@ -24,14 +24,16 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, Props>(({ config,
     if (config.expectedResultType === ModuleResultType.Attempt) {
       result({
         type: ModuleResultType.Attempt,
-        data: { attemptStatus: "success" },
+        data: 1,
+        actions: [],
       });
     }
 
     if (config.expectedResultType === ModuleResultType.Choice) {
       result({
         type: ModuleResultType.Choice,
-        data: { choiceIndex: 0 },
+        data: 0,
+        actions: [],
       });
     }
   }, [config, result]);
