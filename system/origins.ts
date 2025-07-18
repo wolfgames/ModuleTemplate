@@ -1,4 +1,4 @@
-import { OriginConfig, DEFAULT_ORIGIN_CONFIG } from 'wolfy-module-kit';
+import { OriginConfig, DEFAULT_ORIGIN_CONFIG } from '@wolfgames/module-kit';
 
 // Modify this object to update the origin configuration
 const customOriginConfig: OriginConfig = {

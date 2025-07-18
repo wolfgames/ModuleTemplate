@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { ActionMap, ChildModuleCommunicator, initModule, ResultPayload, ModuleResultType, OperationHandle } from 'wolfy-module-kit';
+import { ActionMap, ChildModuleCommunicator, initModule, ResultPayload, ModuleResultType, OperationHandle } from '@wolfgames/module-kit';
 
 // region Frozen
 import moduleConfig, { type ModuleConfig } from './configuration';
