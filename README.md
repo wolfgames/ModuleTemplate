@@ -26,12 +26,13 @@ npm run dev
 
 ## Module Structure
 
-- `game/` - Contains all module-specific files
+- `system/` - Contains all module-specific files
+  - `actions.ts` - Module actions schema
   - `configuration.ts` - Module configuration schema
   - `operation.ts` - Module operation definitions  
   - `result-interpretation.ts` - Result processing logic
-  - `component.tsx` - Main React component
-  - `types.ts` - Shared type definitions
+  - `component.tsx` - Main React component, entry point to the module functionality
+  - `origins.ts` - Specific module allowed origins
 
 ## Usage
 
@@ -39,6 +40,7 @@ The module follows the standard game module pattern with:
 
 - **Configuration**: Defines the module's settings and behavior
 - **Operations**: External events the module can receive
+- **Actions**: External actions the module can trigger in results
 - **Results**: Standardized output format (Attempt/Choice)
 - **Component**: React component with forwardRef pattern
 
@@ -48,10 +50,11 @@ Modify the configuration in the demo files to test different scenarios:
 
 - `app/page.tsx`
 
-Update the module files in the `game/` directory to implement your specific functionality:
+Update the module files in the `system/` directory to implement your specific functionality:
 
 - Add your configuration schema to `configuration.ts`
 - Define operations in `operation.ts`
+- Define actions in `actions.ts`
 - Implement your component logic in `component.tsx`
 - Update result interpretation in `result-interpretation.ts`
 

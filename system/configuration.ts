@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { baseConfig, BaseActions, ModuleReplayAbility, ModuleResultType, ModuleIntegrationType } from 'wolfy-module-kit';
+import { baseConfig, BaseActions, ModuleReplayAbility, ModuleResultType, ModuleIntegrationType } from '@wolfgames/module-kit';
 import { AppActionsSchema } from "./actions";
 
 // region Generated

@@ -1,6 +1,6 @@
 "use client"
 
-import { encodeConfig, validateSchema } from 'wolfy-module-kit'
+import { encodeConfig, validateSchema } from '@wolfgames/module-kit'
 import { ModuleConfig } from "@/system/configuration"
 import { useState } from "react"
 import { z } from "zod"

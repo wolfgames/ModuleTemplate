@@ -1,5 +1,5 @@
 {
-  "name": "erons-cool-mod",
+  "name": "public-eye-module-template",
   "version": "0.1.0",
   "description": "",
   "private": true,
@@ -10,10 +10,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@wolfgames/module-kit": "^1.1.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "wolfy-module-kit": "^1.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
