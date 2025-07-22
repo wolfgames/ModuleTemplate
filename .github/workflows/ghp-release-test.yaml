@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout main so we can list remote branches
-      - name: Checkout main (full history)
+      # 1. Checkout the branch that triggered the workflow
+      - name: Checkout current branch
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -38,42 +38,29 @@ jobs:
           echo "next_version=$next" >> $GITHUB_OUTPUT
           echo "branch=version-$next" >> $GITHUB_OUTPUT
 
-      # 3. Create the new branch via GitHub API
+      # 3. Create the new branch from the current commit
       - name: Create version branch
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branch = '${{ steps.version.outputs.branch }}';
-
-            // 1) Get the SHA of main
-            const { data: mainRef } = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo:  context.repo.repo,
-              ref:   'heads/main'
-            });
-
-            // 2) Create the new branch
+            
+            // Create the new branch from the current commit SHA
             await github.rest.git.createRef({
               owner: context.repo.owner,
               repo:  context.repo.repo,
               ref:   `refs/heads/${branch}`,
-              sha:   mainRef.object.sha
+              sha:   context.sha 
             });
 
-      # 4. Checkout that newly-created branch
-      - name: Checkout version branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.version.outputs.branch }}
-
-      # 5. Build your React app
+      # 4. Build your React app (using the already checked out code)
       - name: Install & build
         run: |
           yarn install
           yarn run build
 
-      # 6. Deploy to GH Pages
+      # 5. Deploy to GH Pages
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
