@@ -8,7 +8,7 @@ import { originConfig } from './origins';
 import { interpretResult } from './result-interpretation';
 // endregion Frozen
 
-const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) => {
+const Component = ({ }) => {
 
   // region Frozen
   const [communicator, setCommunicator] = useState<ChildModuleCommunicator | null>(null);
@@ -16,11 +16,27 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) =>
   const [config, setConfig] = useState<ModuleConfig | null>(null);
   const [moduleUid, setModuleUid] = useState<string | null>(null)
   const [actions, setActions] = useState<ActionMap>()
+  // endregion Frozen
 
-  useEffect(() => {
-    window.parent.postMessage('module-ready', { targetOrigin: '*' })
+  // state affected by operations
+  const [title, setTitle] = useState<string>("Module Template");
+
+  // aspects record
+  const [aspects, setAspects] = useState<Record<string, any>>({});
+
+  const handleAspectUpdate = useCallback((key: string, value: any) => {
+    setAspects(prev => ({ ...prev, [key]: value }));
   }, []);
 
+  const handleOperation = useCallback((operation: ModuleOperation) => {
+    if (operation.type === 'SET_TITLE') {
+      setTitle(operation.value);
+    } else {
+      console.warn('Unknown operation type:', operation.type);
+    }
+  }, []);
+
+  // region Frozen
   useEffect(() => {
     try {
       const initCallback = (uid: string, actions: ActionMap) => {
@@ -39,6 +55,9 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) =>
         originConfig,
       });
 
+      communicator.onOperation(handleOperation);
+      communicator.onAspectUpdate(handleAspectUpdate);
+
       communicator.sendReady();
 
       setCommunicator(communicator);
@@ -52,14 +71,8 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) =>
     return () => {
       communicator?.cleanup()
     }
-  }, []);
+  }, [handleOperation, handleAspectUpdate]);
   // endregion Frozen
-
-  useImperativeHandle(ref, () => ({
-    onOperation: () => { },
-    onCancel: () => { },
-    onAspectValueChange: () => { },
-  }), []);
 
   const reportExecutionResult = useCallback(() => {
     if (!resultHandler || !config || !communicator || !actions) {
@@ -92,10 +105,15 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) =>
   return <div className="w-full h-full flex items-center justify-center">
     {config ? (
       <div className="text-center">
-        <h1 className="text-2xl font-bold mb-4">Module Template</h1>
+        <h1 className="text-2xl font-bold mb-4">Operations test: {title}</h1>
         <p className="text-lg mb-2">Module ID: {moduleUid}</p>
         <p className="text-sm text-gray-500">Expected result type: {config.expectedResultType}</p>
         <p className="text-sm text-gray-500">Available actions: {JSON.stringify(actions, null, 2)}</p>
+
+        <div className="mt-4 p-2 bg-gray-100 text-left text-xs">
+          <h3 className="font-bold">Received Aspects:</h3>
+          <pre>{JSON.stringify(aspects, null, 2)}</pre>
+        </div>
 
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -108,6 +126,6 @@ const Component = forwardRef<OperationHandle<ModuleOperation>, {}>(({ }, ref) =>
       <p>loading...</p>
     )}
   </div>;
-});
+};
 
 export default Component;
