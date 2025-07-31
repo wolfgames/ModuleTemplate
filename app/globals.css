@@ -12,13 +12,3 @@ body {
   color: #1f2937; /* Dark gray text for better readability */
   background-color: #f3f4f6; /* Light gray background */
 }
-
-/* Hide scrollbars but keep functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
-}

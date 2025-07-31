@@ -1,116 +1,16 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { TweeParser } from '../../src/parser/tweeParser';
-import { GameEngine } from '../../src/engine/gameEngine';
-import SMSInterface from '../../src/ui/SMSInterface';
-import { GameData } from '../../src/parser/types';
+import Component from '@/system/component';
 
-export default function GamePage() {
-  const [gameData, setGameData] = useState<GameData | null>(null);
-  const [gameEngine, setGameEngine] = useState<GameEngine | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentScript, setCurrentScript] = useState<string>('SMS Branching40.twee');
-
-  useEffect(() => {
-    loadGame();
-  }, [currentScript]);
-
-  const loadGame = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Load the Twee script
-      const response = await fetch(`/scripts/${currentScript}`);
-      if (!response.ok) {
-        throw new Error(`Failed to load script: ${response.statusText}`);
-      }
-      
-      const scriptContent = await response.text();
-      
-      // Parse the script
-      const parser = new TweeParser();
-      const parseResult = parser.parseTweeFile(scriptContent);
-      
-      if (parseResult.errors.length > 0) {
-        console.warn('Parser errors:', parseResult.errors);
-      }
-      
-      if (parseResult.warnings.length > 0) {
-        console.warn('Parser warnings:', parseResult.warnings);
-      }
-
-      // Create game engine
-      const engine = new GameEngine(parseResult.gameData, {
-        onMessageAdded: () => {},
-        onContactUnlocked: () => {},
-        onThreadStateChanged: () => {},
-        onVariableChanged: () => {},
-        onActionExecuted: () => {}
-      });
-
-      setGameData(parseResult.gameData);
-      setGameEngine(engine);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load game');
-      console.error('Error loading game:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleScriptReload = () => {
-    loadGame();
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading SMS game...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Game</h1>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button
-            onClick={loadGame}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!gameData || !gameEngine) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">❌</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Game Not Loaded</h1>
-          <p className="text-gray-600">Failed to initialize game engine</p>
-        </div>
-      </div>
-    );
-  }
-
+export default function Home() {
   return (
-    <SMSInterface
-      gameEngine={gameEngine}
-      gameData={gameData}
-      onScriptReload={handleScriptReload}
-    />
-  );
+    <main className="min-h-screen bg-gray-100">
+      <div className="container mx-auto py-8">
+        <h1 className="text-3xl font-bold text-center mb-8">Module Demo</h1>
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+          <Component />
+        </div>
+      </div>
+    </main>
+  )
 }
